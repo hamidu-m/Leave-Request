@@ -3,10 +3,9 @@ from datetime import datetime
 
 def calculate_accrued_leave(hire_date_str, current_date_str=None):
     """Calculates total leave days accrued based on tenure with the company.
-
-    Accrual rate: 1.25 days per completed/partial month (15 days / year).
+    Accrual rate is 1.25 days per completed/partial month (15 days / year).
     """
-    # Use standard format string "%Y-%m-%d" to parse the dates
+    # Date Format
     DATE_FORMAT = "%Y-%m-%d"
 
     # If current_date_str is provided, parse it; otherwise, use the live system time
@@ -15,7 +14,7 @@ def calculate_accrued_leave(hire_date_str, current_date_str=None):
     else:
         current_date = datetime.now()
 
-    # Move this down so current_date is already defined before parsing hire_date
+    # current_date is already defined before parsing hire_date
     hire_date = datetime.strptime(hire_date_str, DATE_FORMAT)
 
     if hire_date > current_date:
@@ -30,7 +29,7 @@ def calculate_accrued_leave(hire_date_str, current_date_str=None):
     if current_date.day < hire_date.day and total_months > 0:
         total_months -= 1
 
-    # 3. RESTART LOGIC: Use modulo to reset months tracking after every 12 months
+    # RESTART LOGIC:Use modulo to reset months tracking after every 12 months
     current_cycle_months = total_months % 12
 
     # Monthly accrual rate: 15 days / 12 months = 1.25
@@ -42,20 +41,9 @@ def calculate_accrued_leave(hire_date_str, current_date_str=None):
 
 # --- Test scenarios ---
 
-# Example 1: Passing None triggers the live, automatically updating date
 hire_date_1 = "2026-09-09"
 leave_days, months = calculate_accrued_leave(hire_date_1, current_date_str=None)
 
 print(f"Today's Date: {datetime.now().strftime('%Y-%m-%d')}")
 print(f"Agent 1 (Tenure: {months} month(s)) -> Accrued Leave: {leave_days} days")
 
-    #
-    # # Example 2: Agent hired 6 months ago
-    # hire_date_2 = "2026-04-09"
-    # leave_days, months = calculate_accrued_leave(hire_date_2, today)
-    # print(f"Agent 2 (Tenure: {months} month(s)) -> Accrued Leave: {leave_days} days")
-    #
-    # # Example 3: Agent hired 1 year ago (12 months)
-    # hire_date_3 = "2025-10-09"
-    # leave_days, months = calculate_accrued_leave(hire_date_3, today)
-    # print(f"Agent 3 (Tenure: {months} month(s)) -> Accrued Leave: {leave_days} days")
